@@ -30,7 +30,7 @@ Feature: Install a patch on the Red Hat-like minion via Salt through the UI
     Then I should see a "Confirm Software Channel Change" text
     When I click on "Confirm"
     Then I should see a "Changing the channels has been scheduled." text
-    And I wait until event "Subscribe channels scheduled by admin" is completed
+    And I wait until event "Subscribe channels scheduled" is completed
 
   Scenario: Schedule errata refresh to reflect channel assignment on Red Hat-like minion
     When I follow "Software" in the content area
@@ -61,7 +61,7 @@ Feature: Install a patch on the Red Hat-like minion via Salt through the UI
     And I click on "Install Selected Packages"
     And I click on "Confirm"
     Then I should see a "1 package install has been scheduled for" text
-    And I wait until event "Package Install/Upgrade scheduled by admin" is completed
+    And I wait until event "Package Install/Upgrade scheduled" is completed
 
   Scenario: Cleanup: remove virgo-dummy and andromeda-dummy packages from Red Hat-like minion
     When I follow "Software" in the content area
@@ -75,5 +75,5 @@ Feature: Install a patch on the Red Hat-like minion via Salt through the UI
     And I click on "Remove Packages"
     And I click on "Confirm"
     Then I should see a "2 package removals have been scheduled" text
-    And I wait until event "Package Removal scheduled by admin" is completed
+    And I wait until event "Package Removal scheduled" is completed
     And I disable repository "test_repo_rpm_pool" on this "rhlike_minion"

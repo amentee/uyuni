@@ -97,13 +97,13 @@ Feature: Channel subscription via SSM
 @sle_minion
   Scenario: Check channel change has completed for the SLES minion
     Given I am on the Systems overview page of this "sle_minion"
-    When I wait until event "Subscribe channels scheduled by admin" is completed
+    When I wait until event "Subscribe channels scheduled" is completed
     Then I should see "The client completed this action on" at least 3 minutes after I scheduled an action
 
 @sle_client
   Scenario: Check channel change has completed for the SLES client
     Given I am on the Systems overview page of this "sle_client"
-    When I wait until event "Subscribe channels scheduled by admin" is completed
+    When I wait until event "Subscribe channels scheduled" is completed
     Then I should see "The client completed this action on" at least 3 minutes after I scheduled an action
 
 @sle_minion

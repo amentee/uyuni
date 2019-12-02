@@ -193,7 +193,7 @@ Feature: Salt SSH action chain
     And I follow "Software" in the content area
     And I click on "Update Package List"
     And I follow "Events" in the content area
-    And I wait until I do not see "Package List Refresh scheduled by admin" text, refreshing the page
+    And I wait until I do not see "Package List Refresh scheduled" text, refreshing the page
     And I follow "Software" in the content area
     And I follow "List / Remove" in the content area
     And I enter "andromeda-dummy" as the filtered package name

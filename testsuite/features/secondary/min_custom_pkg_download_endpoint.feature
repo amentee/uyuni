@@ -78,4 +78,3 @@ Feature: Repos file generation based on custom pillar data
   Scenario: Cleanup: recheck the default RPM download point values
     Then the susemanager repo file should exist on the "sle_minion"
     And I should see "https", "proxy" and "443" in the repo file on the "sle_minion"
-

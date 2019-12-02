@@ -42,7 +42,7 @@ Feature: Monitor SUMA environment with Prometheus on a Red Hat-like Salt minion
     When I follow "States" in the content area
     And I click on "Apply Highstate"
     Then I should see a "Applying the highstate has been scheduled." text
-    And I wait until event "Apply highstate scheduled by admin" is completed
+    And I wait until event "Apply highstate scheduled" is completed
 
   Scenario: Visit monitoring endpoints on the Red Hat-like minion
     When I wait until "prometheus-node_exporter" service is active on "rhlike_minion"
@@ -62,7 +62,7 @@ Feature: Monitor SUMA environment with Prometheus on a Red Hat-like Salt minion
     When I follow "States" in the content area
     And I click on "Apply Highstate"
     Then I should see a "Applying the highstate has been scheduled." text
-    And I wait until event "Apply highstate scheduled by admin" is completed
+    And I wait until event "Apply highstate scheduled" is completed
 
   Scenario: Cleanup: disable Prometheus exporters repository on the Red Hat-like minion
     When I disable the necessary repositories before installing Prometheus exporters on this "rhlike_minion" without error control

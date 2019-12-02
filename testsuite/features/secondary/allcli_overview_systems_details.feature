@@ -14,7 +14,7 @@ Feature: The system details of each minion and client provides an overview of th
     And I click on "Schedule Hardware Refresh"
     Then I should see a "You have successfully scheduled a hardware profile refresh" text
     And I force picking pending events on "sle_client" if necessary
-    And I wait until event "Hardware List Refresh scheduled by admin" is completed
+    And I wait until event "Hardware List Refresh scheduled" is completed
 
 @sle_client
   Scenario: Traditional client grains are displayed correctly on the details page
@@ -35,7 +35,7 @@ Feature: The system details of each minion and client provides an overview of th
     When I follow "Hardware"
     And I click on "Schedule Hardware Refresh"
     Then I should see a "You have successfully scheduled a hardware profile refresh" text
-    And I wait until event "Hardware List Refresh scheduled by admin" is completed
+    And I wait until event "Hardware List Refresh scheduled" is completed
 
 @sle_minion
   Scenario: Minion grains are displayed correctly on the details page
@@ -56,7 +56,7 @@ Feature: The system details of each minion and client provides an overview of th
     When I follow "Hardware"
     And I click on "Schedule Hardware Refresh"
     Then I should see a "You have successfully scheduled a hardware profile refresh" text
-    And I wait until event "Hardware List Refresh scheduled by admin" is completed
+    And I wait until event "Hardware List Refresh scheduled" is completed
 
 @rhlike_minion
   Scenario: Red Hat-like minion grains are displayed correctly on the details page
@@ -77,7 +77,7 @@ Feature: The system details of each minion and client provides an overview of th
     When I follow "Hardware"
     And I click on "Schedule Hardware Refresh"
     Then I should see a "You have successfully scheduled a hardware profile refresh" text
-    And I wait until event "Hardware List Refresh scheduled by admin" is completed
+    And I wait until event "Hardware List Refresh scheduled" is completed
 
 @deblike_minion
   Scenario: Debian-like minion grains are displayed correctly on the details page
@@ -98,7 +98,7 @@ Feature: The system details of each minion and client provides an overview of th
     When I follow "Hardware"
     And I click on "Schedule Hardware Refresh"
     Then I should see a "You have successfully scheduled a hardware profile refresh" text
-    And I wait until event "Hardware List Refresh scheduled by admin" is completed
+    And I wait until event "Hardware List Refresh scheduled" is completed
 
 @ssh_minion
   Scenario: SSH-managed minion grains are displayed correctly on the details page

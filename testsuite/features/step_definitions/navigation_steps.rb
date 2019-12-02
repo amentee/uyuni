@@ -211,7 +211,7 @@ end
 
 When(/^I include the recommended child channels$/) do
   toggle = "//span[@class='pointer']"
-  if page.has_xpath?(toggle, wait: 5)
+  if has_xpath?(toggle, wait: 5)
     find(:xpath, toggle).click
   end
 end
@@ -373,13 +373,7 @@ end
 #
 
 Given(/^I am not authorized$/) do
-  begin
-    page.reset!
-  rescue NoMethodError
-    log 'The browser session could not be cleaned.'
-  ensure
-    visit Capybara.app_host
-  end
+  web_driver_session_reset
   raise "Button 'Sign In' not visible" unless find_button('Sign In').visible?
 end
 
@@ -396,7 +390,11 @@ end
 Given(/^I am authorized for the "([^"]*)" section$/) do |section|
   case section
   when 'Admin'
-    step %(I am authorized as "admin" with password "admin")
+    if $username
+      step %(I am authorized as "#{$username}" with password "#{$password}")
+    else
+      step %(I am authorized as "admin" with password "admin")
+    end
   when 'Images'
     step %(I am authorized as "kiwikiwi" with password "kiwikiwi")
   end
@@ -502,13 +500,7 @@ end
 # login, logout steps
 
 Given(/^I am authorized as "([^"]*)" with password "([^"]*)"$/) do |user, passwd|
-  begin
-    page.reset!
-  rescue NoMethodError
-    log 'The browser session could not be cleaned.'
-  ensure
-    visit Capybara.app_host
-  end
+  web_driver_session_reset
   next if all(:xpath, "//header//span[text()='#{user}']", wait: 0).any?
 
   find(:xpath, "//header//i[@class='fa fa-sign-out']").click if all(:xpath, "//header//i[@class='fa fa-sign-out']", wait: 0).any?
@@ -1124,5 +1116,5 @@ When(/^I enter "([^"]*)" as the left menu search field$/) do |search_text|
 end
 
 Then(/^I should see left menu empty$/) do
-  raise StandardError, 'The left menu is not empty.' unless page.has_no_xpath?("//*[contains(@class, 'level1')]/*/*[contains(@class, 'nodeLink')]")
+  raise StandardError, 'The left menu is not empty.' unless has_no_xpath?("//*[contains(@class, 'level1')]/*/*[contains(@class, 'nodeLink')]")
 end

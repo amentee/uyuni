@@ -48,7 +48,7 @@ end
 MultiTest.disable_autorun
 
 # register chromedriver headless mode
-Capybara.register_driver(:headless_chrome) do |app|
+$app = Capybara.register_driver(:headless_chrome) do |app|
   client = Selenium::WebDriver::Remote::Http::Default.new
   # WORKAROUND failure at Scenario: Test IPMI functions: increase from 60 s to 180 s
   client.read_timeout = 180
@@ -73,6 +73,8 @@ Capybara.register_driver(:headless_chrome) do |app|
     desired_capabilities: capabilities,
     http_client: client
   )
+
+  app
 end
 
 Selenium::WebDriver.logger.level = :error unless $debug_mode
@@ -124,9 +126,14 @@ After('@scope_cobbler') do |scenario|
 end
 
 AfterStep do
-  if has_css?('.senna-loading', wait: 0)
-    log 'WARN: Step ends with an ajax transition not finished, let\'s wait a bit!'
-    log 'Timeout: Waiting AJAX transition' unless has_no_css?('.senna-loading', wait: 20)
+  next unless Capybara::Session.instance_created?
+
+  begin
+    if has_css?('.senna-loading', wait: 0)
+      log 'Timeout: Waiting AJAX transition' unless has_no_css?('.senna-loading', wait: 20)
+    end
+  rescue
+    next
   end
 end
 
@@ -134,6 +141,22 @@ Before do
   current_time = Time.new
   @scenario_start_time = current_time.to_i
   log "This scenario ran at: #{current_time}\n"
+end
+
+# Before feature hook
+Before do |scenario|
+  feature_path = scenario.location.file
+  next unless feature_path != $current_feature
+
+  $current_feature = feature_path
+  # Core features are always handled using admin user, the rest will use its own user based on feature filename
+  if (feature_path.include? 'core') || (feature_path.include? 'reposync')
+    $username = 'admin'
+    $password = 'admin'
+  else
+    username = $current_feature.split(%r{(\.feature|\/)})[-2]
+    step %(I create a user with name "#{username}" and password "linux") if $username.nil?
+  end
 end
 
 # do some tests only if the corresponding node exists

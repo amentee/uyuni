@@ -58,7 +58,7 @@ Feature: Be able to register a Red Hat-like traditional client and do some basic
     Then I should see a "Confirm Software Channel Change" text
     When I click on "Confirm"
     Then I should see a "Changing the channels has been scheduled." text
-    And I wait until event "Subscribe channels scheduled by admin" is completed
+    And I wait until event "Subscribe channels scheduled" is completed
 
   Scenario: Schedule an OpenSCAP audit job for the Red Hat-like traditional client
     Given I am on the Systems overview page of this "rhlike_client"
@@ -129,4 +129,4 @@ Feature: Be able to register a Red Hat-like traditional client and do some basic
     Then I should see a "Confirm Software Channel Change" text
     When I click on "Confirm"
     Then I should see a "Changing the channels has been scheduled." text
-    And I wait until event "Subscribe channels scheduled by admin" is completed
+    And I wait until event "Subscribe channels scheduled" is completed

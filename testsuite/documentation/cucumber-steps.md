@@ -242,7 +242,7 @@ For a test with a regular expression, there is ```I should see a text like "..."
 
 ```cucumber
   When I wait until I see "Software Updates Available" text, refreshing the page
-  When I wait until I do not see "Apply highstate scheduled by admin" text, refreshing the page
+  When I wait until I do not see "Apply highstate scheduled" text, refreshing the page
   When I wait until I see the name of "sle_minion", refreshing the page
   When I wait until I do not see the name of "sle_minion", refreshing the page
   When I wait until the table contains "FINISHED" or "SKIPPED" followed by "FINISHED" in its first rows
@@ -567,7 +567,7 @@ Note that the text area variant handles the new lines characters while the other
 
 ```cucumber
   When I wait until onboarding is completed for "rhlike_minion"
-  When I wait until event "Package Install/Upgrade scheduled by admin" is completed
+  When I wait until event "Package Install/Upgrade scheduled" is completed
 ```
 
 
@@ -809,4 +809,3 @@ Following code is expected to be a part of function used as step definition for 
 NOTE: This solution was tested and worked properly, but there was no time gain in comparison with old solution using capybara steps.
 
 TIP: We still can play with timeout value in our test environment, if necessary. See default value [here](https://github.com/uyuni-project/uyuni/blob/master/web/conf/rhn_web.conf#L29-L31)
-

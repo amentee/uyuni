@@ -181,7 +181,7 @@ Feature: Management of configuration of all types of clients in a single channel
     And I click on "Compare Files"
     And I click on "Schedule Compare"
     Then I should see a "1 files scheduled for comparison." text
-    When I wait until event "Show differences between profiled config files and deployed config files scheduled by admin" is completed
+    When I wait until event "Show differences between profiled config files and deployed config files scheduled" is completed
     Then I should see a "Differences exist" link
     When I follow "Differences exist"
     Then I should see a "+COLOR=white" text

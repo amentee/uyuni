@@ -52,7 +52,7 @@ Feature: Move a ssh minion from a proxy to direct connection
     And I wait until I see "scheduled" text
     And I follow "Events"
     And I follow "History"
-    And I wait until I see the event "Apply states [channels] scheduled by admin" completed during last minute, refreshing the page
+    And I wait until I see the event "Apply states [channels] scheduled" completed during last minute, refreshing the page
 
   Scenario: Check direct connection
     Given I am on the Systems overview page of this "ssh_minion"
@@ -72,7 +72,7 @@ Feature: Move a ssh minion from a proxy to direct connection
     And I wait until I see "scheduled" text
     And I follow "Events"
     And I follow "History"
-    And I wait until I see the event "Apply states [channels] scheduled by admin" completed during last minute, refreshing the page
+    And I wait until I see the event "Apply states [channels] scheduled" completed during last minute, refreshing the page
 
   Scenario: Check registration on proxy of minion
     Given I am on the Systems overview page of this "proxy"

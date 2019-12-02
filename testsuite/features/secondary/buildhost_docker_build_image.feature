@@ -53,11 +53,11 @@ Feature: Build container images
   Scenario: Build the images with and without activation key
     Given I am on the Systems overview page of this "build_host"
     When I schedule the build of image "suse_key" via API calls
-    And I wait at most 660 seconds until event "Image Build suse_key scheduled by admin" is completed
+    And I wait at most 660 seconds until event "Image Build suse_key scheduled" is completed
     And I schedule the build of image "suse_simple" via API calls
-    And I wait at most 660 seconds until event "Image Build suse_simple scheduled by admin" is completed
+    And I wait at most 660 seconds until event "Image Build suse_simple scheduled" is completed
     And I schedule the build of image "suse_real_key" via API calls
-    And I wait at most 660 seconds until event "Image Build suse_real_key scheduled by admin" is completed
+    And I wait at most 660 seconds until event "Image Build suse_real_key scheduled" is completed
     And I wait at most 60 seconds until all "3" container images are built correctly on the Image List page
     # We should see the same result via API.
     # Also, check that all inspect actions are finished:

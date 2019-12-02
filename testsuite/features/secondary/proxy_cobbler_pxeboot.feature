@@ -27,7 +27,7 @@ Feature: PXE boot a terminal with Cobbler
   Scenario: Apply the highstate after the formula setup
     When I follow "States" in the content area
     And I click on "Apply Highstate"
-    And I wait until event "Apply highstate scheduled by admin" is completed
+    And I wait until event "Apply highstate scheduled" is completed
 
    Scenario: Install TFTP boot package on the server
     When I install package tftpboot-installation on the server
@@ -105,7 +105,7 @@ Feature: PXE boot a terminal with Cobbler
     And I click on "Install Selected Packages"
     And I click on "Confirm"
     Then I should see a "1 package install has been scheduled" text
-    When I wait until event "Package Install/Upgrade scheduled by admin" is completed
+    When I wait until event "Package Install/Upgrade scheduled" is completed
 
   Scenario: Cleanup: remove the auto installation profile
     Given I follow the left menu "Systems > Autoinstallation > Profiles"
@@ -144,4 +144,4 @@ Feature: PXE boot a terminal with Cobbler
   Scenario: Cleanup: apply the highstate after the formula cleanup changes
     When I follow "States" in the content area
     And I click on "Apply Highstate"
-    And I wait until event "Apply highstate scheduled by admin" is completed
+    And I wait until event "Apply highstate scheduled" is completed

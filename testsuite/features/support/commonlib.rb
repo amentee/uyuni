@@ -4,11 +4,6 @@
 require 'tempfile'
 require 'yaml'
 
-# return current URL
-def current_url
-  driver.current_url
-end
-
 # generate temporary file on the controller
 def generate_temp_file(name, content)
   Tempfile.open(name) do |file|
@@ -238,4 +233,14 @@ def get_uptime_from_host(host)
   hours = (minutes / 60.0) # 60 minutes
   days = (hours / 24.0) # 24 hours
   { seconds: seconds, minutes: minutes, hours: hours, days: days }
+end
+
+def web_driver_session_reset
+  begin
+    page.reset! if Capybara::Session.instance_created?
+  rescue NoMethodError
+    log 'The browser session could not be cleaned.'
+  ensure
+    visit Capybara.app_host
+  end
 end

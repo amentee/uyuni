@@ -73,7 +73,7 @@ Feature: State Configuration channels
     Then I should see a "Execute States" button
     When I click on "Execute States"
     Then I should see a "Applying the config channels has been scheduled" text
-    When I wait until event "Apply states [custom] scheduled by admin" is completed
+    When I wait until event "Apply states [custom] scheduled" is completed
     And I wait until file "/root/statechannel" exists on "sle_minion"
     And I wait until file "/root/statechannel2" exists on "sle_minion"
 

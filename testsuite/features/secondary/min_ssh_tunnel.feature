@@ -45,7 +45,7 @@ Feature: Register a Salt system to be managed via SSH tunnel
     And I click on "Confirm"
     Then I should see a "1 package install has been scheduled for" text
     When I force picking pending events on "ssh_minion" if necessary
-    Then I wait until event "Package Install/Upgrade scheduled by admin" is completed
+    Then I wait until event "Package Install/Upgrade scheduled" is completed
 
   Scenario: Remove a package from this SSH tunnel minion
     Given I am on the Systems overview page of this "ssh_minion"
@@ -58,7 +58,7 @@ Feature: Register a Salt system to be managed via SSH tunnel
     And I click on "Confirm"
     Then I should see a "1 package removal has been scheduled" text
     When I force picking pending events on "ssh_minion" if necessary
-    Then I wait until event "Package Removal scheduled by admin" is completed
+    Then I wait until event "Package Removal scheduled" is completed
 
   Scenario: Run a remote command on this SSH tunnel minion
     When I follow the left menu "Salt > Remote Commands"

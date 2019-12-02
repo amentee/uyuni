@@ -15,7 +15,7 @@ Feature: Verify that Salt mgrcompat state works when the new module.run syntax i
     When I follow "Hardware"
     And I click on "Schedule Hardware Refresh"
     Then I should see a "You have successfully scheduled a hardware profile refresh" text
-    And I wait until event "Hardware List Refresh scheduled by admin" is completed
+    And I wait until event "Hardware List Refresh scheduled" is completed
 
   Scenario: Remove saltutil grain and mgrcompat module from minion and schedule Hardware Refresh
     Given I remove "minion/extmods/states/mgrcompat.py" from salt cache on "sle_minion"
@@ -26,7 +26,7 @@ Feature: Verify that Salt mgrcompat state works when the new module.run syntax i
     When I follow "Hardware"
     And I click on "Schedule Hardware Refresh"
     Then I should see a "You have successfully scheduled a hardware profile refresh" text
-    And I wait until event "Hardware List Refresh scheduled by admin" is completed
+    And I wait until event "Hardware List Refresh scheduled" is completed
 
   Scenario: Delete SLES minion system profile before mgrcompat test
     Given I am on the Systems overview page of this "sle_minion"
@@ -65,7 +65,7 @@ Feature: Verify that Salt mgrcompat state works when the new module.run syntax i
     And I follow "Hardware"
     And I click on "Schedule Hardware Refresh"
     Then I should see a "You have successfully scheduled a hardware profile refresh" text
-    And I wait until event "Hardware List Refresh scheduled by admin" is completed
+    And I wait until event "Hardware List Refresh scheduled" is completed
 
   Scenario: Cleanup: Delete profile of the minion and disable new module.run syntax
     Given I am on the Systems overview page of this "sle_minion"
@@ -100,4 +100,4 @@ Feature: Verify that Salt mgrcompat state works when the new module.run syntax i
     Then I should see a "Confirm Software Channel Change" text
     When I click on "Confirm"
     Then I should see a "Changing the channels has been scheduled." text
-    And I wait until event "Subscribe channels scheduled by admin" is completed
+    And I wait until event "Subscribe channels scheduled" is completed

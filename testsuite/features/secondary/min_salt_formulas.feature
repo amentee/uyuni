@@ -65,7 +65,7 @@ Feature: Use salt formulas
      And I follow "States" in the content area
      And I click on "Apply Highstate"
      Then I should see a "Applying the highstate has been scheduled." text
-     When I wait until event "Apply highstate scheduled by admin" is completed
+     When I wait until event "Apply highstate scheduled" is completed
      Then the timezone on "sle_minion" should be "+05"
      And the keymap on "sle_minion" should be "ca.map.gz"
      And the language on "sle_minion" should be "fr_FR.UTF-8"
@@ -88,7 +88,7 @@ Feature: Use salt formulas
      And I follow "States" in the content area
      And I click on "Apply Highstate"
      Then I should see a "Applying the highstate has been scheduled." text
-     When I wait until event "Apply highstate scheduled by admin" is completed
+     When I wait until event "Apply highstate scheduled" is completed
      Then the timezone on "sle_minion" should be "CET"
      And the keymap on "sle_minion" should be "us.map.gz"
      And the language on "sle_minion" should be "en_US.UTF-8"
@@ -155,7 +155,7 @@ Feature: Use salt formulas
      And I follow "States" in the content area
      And I click on "Apply Highstate"
      Then I should see a "Applying the highstate has been scheduled." text
-     When I wait until event "Apply highstate scheduled by admin" is completed
+     When I wait until event "Apply highstate scheduled" is completed
      Then the timezone on "sle_minion" should be "CET"
      And the keymap on "sle_minion" should be "us.map.gz"
      And the language on "sle_minion" should be "en_US.UTF-8"

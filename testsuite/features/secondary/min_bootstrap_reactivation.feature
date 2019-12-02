@@ -60,7 +60,7 @@ Feature: bootstrapping with reactivation key
     When I follow "Events" in the content area
     And I follow "History" in the content area
     And I wait until I see "Server reactivated as Salt minion" text, refreshing the page
-    And I wait until event "Apply states [certs, channels, packages, services.salt-minion] scheduled by admin" is completed
+    And I wait until event "Apply states [certs, channels, packages, services.salt-minion] scheduled" is completed
 
   Scenario: Cleanup: delete SLES minion after reactivation tests
     Given I am on the Systems overview page of this "sle_minion"
@@ -94,4 +94,4 @@ Feature: bootstrapping with reactivation key
     Then I should see a "Confirm Software Channel Change" text
     When I click on "Confirm"
     Then I should see a "Changing the channels has been scheduled." text
-    When I wait until event "Subscribe channels scheduled by admin" is completed
+    When I wait until event "Subscribe channels scheduled" is completed
