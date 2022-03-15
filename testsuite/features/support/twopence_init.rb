@@ -165,6 +165,8 @@ def get_system_name(host)
       word =~ /example.sle15sp4terminal-/
     end
     system_name = 'sle15sp4terminal.example.org' if system_name.nil?
+  when 'containerized_proxy'
+    system_name = $proxy.full_hostname.sub('pxy', 'pod-pxy')
   else
     begin
       node = get_target(host)

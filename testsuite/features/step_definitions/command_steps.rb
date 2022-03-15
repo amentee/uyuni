@@ -238,10 +238,14 @@ When(/^I apply highstate on "([^"]*)"$/) do |host|
   $server.run_until_ok("#{cmd} #{system_name} state.highstate")
 end
 
-When(/^I wait until "([^"]*)" service is active on "([^"]*)"$/) do |service, host|
+Then(/^I wait until "([^"]*)" service is (active|inactive) on "([^"]*)"$/) do |service, status, host|
   node = get_target(host)
   cmd = "systemctl is-active #{service}"
-  node.run_until_ok(cmd)
+  repeat_until_timeout do
+    out, _err, _code = node.run(cmd, check_errors: false, separated_results: true)
+    break if out.strip == status
+    sleep 2
+  end
 end
 
 When(/^I wait until "([^"]*)" exporter service is active on "([^"]*)"$/) do |service, host|
@@ -663,6 +667,11 @@ Then(/^I should see "(.*?)" in the output$/) do |arg1|
   raise "Command Output #{@command_output} don't include #{arg1}" unless @command_output.include? arg1
 end
 
+When(/^I (start|stop) "([^"]*)" service on "([^"]*)"$/) do |action, service, host|
+  node = get_target(host)
+  node.run("systemctl #{action} #{service}")
+end
+
 Then(/^service "([^"]*)" is enabled on "([^"]*)"$/) do |service, host|
   node = get_target(host)
   output, _code = node.run("systemctl is-enabled '#{service}'", check_errors: false)
@@ -974,6 +983,15 @@ end
 
 When(/^I open avahi port on the proxy$/) do
   $proxy.run('firewall-offline-cmd --zone=public --add-service=mdns')
+end
+
+When(/^I copy "([^"]*)" file from "([^"]*)" to "([^"]*)"$/) do |file_path, from_host, to_host|
+  from_node = get_target(from_host)
+  to_node = get_target(to_host)
+  return_code = file_extract(from_node, file_path, file_path)
+  raise 'File extraction failed' unless return_code.zero?
+  return_code = file_inject(to_node, file_path, file_path)
+  raise 'File injection failed' unless return_code.zero?
 end
 
 When(/^I copy server\'s keys to the proxy$/) do
@@ -1542,8 +1560,9 @@ Then(/^export folder "(.*?)" shouldn't exist on server$/) do |folder|
   raise "Folder exists" if folder_exists?($server, folder)
 end
 
-When(/^I ensure folder "(.*?)" doesn't exist$/) do |folder|
-  folder_delete($server, folder) if folder_exists?($server, folder)
+When(/^I ensure folder "(.*?)" doesn't exist on "(.*?)"$/) do |folder, host|
+  node = get_target(host)
+  folder_delete(node, folder) if folder_exists?(node, folder)
 end
 
 ## ReportDB ##
@@ -1671,4 +1690,48 @@ end
 Then(/^I flush firewall on "([^"]*)"$/) do |target|
   node = get_target(target)
   node.run("iptables -F INPUT")
+end
+
+When(/^I generate the configuration "([^"]*)" of Containerized Proxy on the server$/) do |file_path|
+  # Doc: https://www.uyuni-project.org/uyuni-docs/en/uyuni/reference/spacecmd/proxy_container.html
+  command = "echo spacewalk > cert_pass && spacecmd -u admin -p admin proxy_container_config_generate_cert" \
+            " -- -o #{file_path} -p 8022 #{$proxy.full_hostname.sub('pxy', 'pod-pxy')} #{$server.full_hostname}" \
+            " 2048 galaxy-noise@suse.de --ca-pass cert_pass" \
+            " && rm cert_pass"
+  $server.run(command)
+end
+
+When(/^I set a new value in a configuration file$/) do |data_table|
+  # This step expects key, value, filepath and the host of the config in a vertical table
+  parameters = data_table.transpose.hashes[0]
+  node = get_target(parameters['host'])
+  parameters['key'] = escape_regex(parameters['key'])
+  parameters['value'] = escape_regex(parameters['value'])
+  regex = "s/^#?#{parameters['key']}=.*$/#{parameters['key']}=#{parameters['value']}/g;"
+  node.run("sed -i.bak -Ee '#{regex}' #{parameters['filepath']}")
+end
+
+When(/^I add avahi hosts in Containerized Proxy configuration$/) do
+  if $server.full_hostname.include? 'tf.local'
+    hosts_list = ""
+    $host_by_node.each do |node, _host|
+      hosts_list += "--add-host=#{node.full_hostname}:#{node.public_ip} "
+    end
+    hosts_list = escape_regex(hosts_list)
+    regex = "s/^#?EXTRA_POD_ARGS=.*$/EXTRA_POD_ARGS=#{hosts_list}/g;"
+    $proxy.run("sed -i.bak -Ee '#{regex}' /etc/sysconfig/uyuni-proxy-systemd-services")
+  else
+    log 'Record not added - avahi domain is not detected'
+  end
+end
+
+When(/^I remove offending ssh key of "([^"]*)" at port "([^"]*)" for "([^"]*)" on "([^"]*)"$/) do |key_host, key_port, known_hosts_path, host|
+  system_name = get_system_name(key_host)
+  node = get_target(host)
+  node.run("ssh-keygen -R [#{system_name}]:#{key_port} -f #{known_hosts_path}")
+end
+
+And(/^I wait until port "([^"]*)" is listening on "([^"]*)"$/) do |port, host|
+  node = get_target(host)
+  node.run_until_ok("lsof  -i:#{port}")
 end
