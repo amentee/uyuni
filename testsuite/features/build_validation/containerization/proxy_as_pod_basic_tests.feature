@@ -1,14 +1,15 @@
 # Copyright (c) 2022 SUSE LLC
 # Licensed under the terms of the MIT license.
 #
+# This feature DON'T aims to prepare the Proxy to be tested by all our supported clients
+# This feature will run in isolation only validating the basic steps on a SLES 15 SP4 Minion
+#
 # The scenarios in this feature are skipped if:
 # * there is no proxy ($proxy is nil)
-# * there is no salt minion ($sle_minion is nil)
-# * there is no scope @scope_containerized_proxy
+# * there is no salt minion ($sle15sp4_minion is nil)
 
-@scope_containerized_proxy
 @proxy
-@sle_minion
+@sle15sp4_minion
 Feature: Register and test a Containerized Proxy
   In order to test Containerized Proxy
   As the system administrator
@@ -18,15 +19,15 @@ Feature: Register and test a Containerized Proxy
     Given I am authorized for the "Admin" section
 
   Scenario: Pre-requisite: Unregister Salt minion in the traditional proxy
-    Given I am on the Systems overview page of this "sle_minion"
-    When I stop salt-minion on "sle_minion"
+    Given I am on the Systems overview page of this "sle15sp4_minion"
+    When I stop salt-minion on "sle15sp4_minion"
     And I follow "Delete System"
     Then I should see a "Confirm System Profile Deletion" text
     When I click on "Delete Profile"
     Then I wait until I see "Cleanup timed out. Please check if the machine is reachable." text
     When I click on "Delete Profile Without Cleanup" in "An error occurred during cleanup" modal
     And I wait until I see "has been deleted" text
-    Then "sle_minion" should not be registered
+    Then "sle15sp4_minion" should not be registered
 
   Scenario: Pre-requisite: Stop traditional proxy service
     When I stop salt-minion on "proxy"
@@ -36,9 +37,9 @@ Feature: Register and test a Containerized Proxy
     And I wait until "jabberd" service is inactive on "proxy"
 
   Scenario: Generate Containerized Proxy configuration
-    When I generate the configuration "/tmp/proxy_container_config.tar.gz" of Containerized Proxy on the server
-    And I copy "/tmp/proxy_container_config.tar.gz" file from "server" to "proxy"
-    And I run "tar xzf /tmp/proxy_container_config.tar.gz -C /etc/uyuni/proxy/" on "proxy"
+    When I generate the configuration "/tmp/proxy_container_config.zip" of Containerized Proxy on the server
+    And I copy "/tmp/proxy_container_config.zip" file from "server" to "proxy"
+    And I run "unzip -qq -o /tmp/proxy_container_config.zip -d /etc/uyuni/proxy/" on "proxy"
 
   Scenario: Set-up the Containerized Proxy service to support Avahi
     And I add avahi hosts in Containerized Proxy configuration
@@ -66,7 +67,7 @@ Feature: Register and test a Containerized Proxy
   Scenario: Bootstrap a Salt minion in the Containerized Proxy
     When I follow the left menu "Systems > Bootstrapping"
     Then I should see a "Bootstrap Minions" text
-    When I enter the hostname of "sle_minion" as "hostname"
+    When I enter the hostname of "sle15sp4_minion" as "hostname"
     And I enter "22" as "port"
     And I enter "root" as "user"
     And I enter "linux" as "password"
@@ -79,12 +80,12 @@ Feature: Register and test a Containerized Proxy
     And I wait until I do not see "Loading..." text
     Then I should see a "accepted" text
     When I follow the left menu "Systems > Overview"
-    And I wait until I see the name of "sle_minion", refreshing the page
-    And I wait until onboarding is completed for "sle_minion"
-    Then the Salt master can reach "sle_minion"
+    And I wait until I see the name of "sle15sp4_minion", refreshing the page
+    And I wait until onboarding is completed for "sle15sp4_minion"
+    Then the Salt master can reach "sle15sp4_minion"
 
   Scenario: Check connection from minion to Containerized Proxy
-    Given I am on the Systems overview page of this "sle_minion"
+    Given I am on the Systems overview page of this "sle15sp4_minion"
     When I follow "Details" in the content area
     And I follow "Connection" in the content area
     Then I should see "containerized_proxy" short hostname
@@ -94,19 +95,19 @@ Feature: Register and test a Containerized Proxy
     And I follow this "containerized_proxy" link
     And I follow "Details" in the content area
     And I follow "Proxy" in the content area
-    Then I should see "sle_minion" hostname
+    Then I should see "sle15sp4_minion" hostname
 
   Scenario: Salt minion grains are displayed correctly on the details page
-    Given I am on the Systems overview page of this "sle_minion"
-    Then the hostname for "sle_minion" should be correct
-    And the kernel for "sle_minion" should be correct
-    And the OS version for "sle_minion" should be correct
-    And the IPv4 address for "sle_minion" should be correct
-    And the IPv6 address for "sle_minion" should be correct
-    And the system ID for "sle_minion" should be correct
-    And the system name for "sle_minion" should be correct
-    And the uptime for "sle_minion" should be correct
-    And I should see several text fields for "sle_minion"
+    Given I am on the Systems overview page of this "sle15sp4_minion"
+    Then the hostname for "sle15sp4_minion" should be correct
+    And the kernel for "sle15sp4_minion" should be correct
+    And the OS version for "sle15sp4_minion" should be correct
+    And the IPv4 address for "sle15sp4_minion" should be correct
+    And the IPv6 address for "sle15sp4_minion" should be correct
+    And the system ID for "sle15sp4_minion" should be correct
+    And the system name for "sle15sp4_minion" should be correct
+    And the uptime for "sle15sp4_minion" should be correct
+    And I should see several text fields for "sle15sp4_minion"
 
   Scenario: Install a patch on the Salt minion
     When I follow "Software" in the content area
@@ -122,9 +123,9 @@ Feature: Register and test a Containerized Proxy
   Scenario: Remove package from Salt minion
     When I follow "Software" in the content area
     And I follow "Install"
-    And I enter the package for "sle_minion" as the filtered package name
+    And I enter the package for "sle15sp4_minion" as the filtered package name
     And I click on the filter button
-    And I check the package for "sle_minion" in the list
+    And I check the package for "sle15sp4_minion" in the list
     And I click on "Install Selected Packages"
     And I click on "Confirm"
     Then I should see a "1 package install has been scheduled for" text
@@ -133,9 +134,9 @@ Feature: Register and test a Containerized Proxy
   Scenario: Remove package from Salt minion
     When I follow "Software" in the content area
     And I follow "List / Remove"
-    And I enter the package for "sle_minion" as the filtered package name
+    And I enter the package for "sle15sp4_minion" as the filtered package name
     And I click on the filter button
-    And I check the package for "sle_minion" in the list
+    And I check the package for "sle15sp4_minion" in the list
     And I click on "Remove Packages"
     And I click on "Confirm"
     Then I should see a "1 package removal has been scheduled" text
@@ -145,17 +146,17 @@ Feature: Register and test a Containerized Proxy
     When I follow the left menu "Salt > Remote Commands"
     Then I should see a "Remote Commands" text in the content area
     When I enter command "echo 'My remote command output'"
-    And I enter the hostname of "sle_minion" as "target"
+    And I enter the hostname of "sle15sp4_minion" as "target"
     And I click on preview
     Then I should see a "Target systems (1)" text
     When I wait until I do not see "pending" text
     And I click on run
     And I wait until I see "show response" text
-    And I expand the results for "sle_minion"
-    Then I should see "My remote command output" in the command output for "sle_minion"
+    And I expand the results for "sle15sp4_minion"
+    Then I should see "My remote command output" in the command output for "sle15sp4_minion"
 
   Scenario: Check that Software package refresh works on a Salt minion
-    Given I am on the Systems overview page of this "sle_minion"
+    Given I am on the Systems overview page of this "sle15sp4_minion"
     When I follow "Software" in the content area
     And I click on "Update Package List"
     And I wait until event "Package List Refresh scheduled by admin" is completed
@@ -196,19 +197,19 @@ Feature: Register and test a Containerized Proxy
     And I follow the left menu "Configuration > Channels"
     And I follow "Mixed Channel"
     And I follow "Deploy all configuration files to selected subscribed systems"
-    And I enter the hostname of "sle_minion" as the filtered system name
+    And I enter the hostname of "sle15sp4_minion" as the filtered system name
     And I click on the filter button
-    And I check the "sle_minion" client
+    And I check the "sle15sp4_minion" client
     And I click on "Confirm & Deploy to Selected Systems"
     Then I should see a "/etc/s-mgr/config" link
     When I click on "Deploy Files to Selected Systems"
     Then I should see a "being scheduled" text
     And I should see a "0 revision-deploys overridden." text
-    And I wait until file "/etc/s-mgr/config" exists on "sle_minion"
-    Then file "/etc/s-mgr/config" should contain "COLOR=white" on "sle_minion"
+    And I wait until file "/etc/s-mgr/config" exists on "sle15sp4_minion"
+    Then file "/etc/s-mgr/config" should contain "COLOR=white" on "sle15sp4_minion"
 
   Scenario: Reboot the Salt minion and wait until reboot is completed
-    Given I am on the Systems overview page of this "sle_minion"
+    Given I am on the Systems overview page of this "sle15sp4_minion"
     When I follow first "Schedule System Reboot"
     Then I should see a "System Reboot Confirmation" text
     And I should see a "Reboot system" button
@@ -229,15 +230,15 @@ Feature: Register and test a Containerized Proxy
     And I wait until event "Package Install/Upgrade scheduled by admin" is completed
 
   Scenario: Cleanup: Unregister a Salt minion in the Containerized Proxy
-    Given I am on the Systems overview page of this "sle_minion"
-    When I stop salt-minion on "sle_minion"
+    Given I am on the Systems overview page of this "sle15sp4_minion"
+    When I stop salt-minion on "sle15sp4_minion"
     And I follow "Delete System"
     Then I should see a "Confirm System Profile Deletion" text
     When I click on "Delete Profile"
     Then I wait until I see "Cleanup timed out. Please check if the machine is reachable." text
     When I click on "Delete Profile Without Cleanup" in "An error occurred during cleanup" modal
     And I wait until I see "has been deleted" text
-    Then "sle_minion" should not be registered
+    Then "sle15sp4_minion" should not be registered
 
   Scenario: Cleanup: Unregister Containerized Proxy
     When I follow the left menu "Systems > System List > Physical Systems"
@@ -266,7 +267,7 @@ Feature: Register and test a Containerized Proxy
   Scenario: Cleanup: Bootstrap a Salt minion in the traditional proxy
     When I follow the left menu "Systems > Bootstrapping"
     Then I should see a "Bootstrap Minions" text
-    When I enter the hostname of "sle_minion" as "hostname"
+    When I enter the hostname of "sle15sp4_minion" as "hostname"
     And I enter "22" as "port"
     And I enter "root" as "user"
     And I enter "linux" as "password"
@@ -279,6 +280,6 @@ Feature: Register and test a Containerized Proxy
     And I wait until I do not see "Loading..." text
     Then I should see a "accepted" text
     When I follow the left menu "Systems > Overview"
-    And I wait until I see the name of "sle_minion", refreshing the page
-    And I wait until onboarding is completed for "sle_minion"
-    Then the Salt master can reach "sle_minion"
+    And I wait until I see the name of "sle15sp4_minion", refreshing the page
+    And I wait until onboarding is completed for "sle15sp4_minion"
+    Then the Salt master can reach "sle15sp4_minion"
